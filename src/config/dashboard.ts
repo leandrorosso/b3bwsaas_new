@@ -29,16 +29,9 @@ export const dashboardConfig = {
 			],
 		},
 		{
-			key: "general",
-			title: "General",
+			key: "registers",
+			title: "Registers",
 			items: [
-				{
-					key: "settings",
-					title: "Settings",
-					href: paths.dashboard.settings.account,
-					icon: "gear",
-					matcher: { type: "startsWith", href: "/dashboard/settings" },
-				},
 				{
 					key: "typepersons",
 					title: "Type Persons",
@@ -48,7 +41,20 @@ export const dashboardConfig = {
 						{ key: "typepersons:create", title: "Create type person", href: paths.dashboard.typepersons.create },
 						{ key: "typepersons:details", title: "Type person details", href: paths.dashboard.typepersons.details("1") },
 					],
-				},				
+				}
+			],
+		},		
+		{
+			key: "general",
+			title: "General",
+			items: [
+				{
+					key: "settings",
+					title: "Settings",
+					href: paths.dashboard.settings.account,
+					icon: "gear",
+					matcher: { type: "startsWith", href: "/dashboard/settings" },
+				},			
 				{
 					key: "customers",
 					title: "Customers",

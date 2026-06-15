@@ -22,6 +22,7 @@ import { z as zod } from "zod";
 import { paths } from "@/paths";
 import { logger } from "@/lib/default-logger";
 import { toast } from "@/components/core/toaster";
+import { createdTypePersons } from "@/app/dashboard/typepersons/_actions/create-typeperson";
 
 const schema = zod.object({
 	name: zod.string().min(1, "Name is required").max(255),
@@ -46,12 +47,16 @@ export function TypePersonCreateForm(): React.JSX.Element {
 
 	const onSubmit = React.useCallback(
 		async (_: Values): Promise<void> => {
-			try {
-				// Make API request
+
+			const response = await createdTypePersons({
+				name:_.name,
+			});
+
+			if (response.data && !Array.isArray(response.data)) {
 				toast.success("Type person created");
-				router.push(paths.dashboard.typepersons.details("1"));
-			} catch (error) {
-				logger.error(error);
+				router.push(paths.dashboard.typepersons.details(response.data.id));
+			} else {
+				logger.error(response.error);
 				toast.error("Something went wrong!");
 			}
 		},
