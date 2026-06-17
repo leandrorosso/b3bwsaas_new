@@ -29,7 +29,15 @@ import { Truck as TruckIcon } from "@phosphor-icons/react/dist/ssr/Truck";
 import { Upload as UploadIcon } from "@phosphor-icons/react/dist/ssr/Upload";
 import { Users as UsersIcon } from "@phosphor-icons/react/dist/ssr/Users";
 import { UserList as TypepersonIcon } from "@phosphor-icons/react/dist/ssr/UserList";
+import { City as CityIcon } from "@phosphor-icons/react/dist/ssr/city";
+import { Calendar as CalendarIcon } from "@phosphor-icons/react/dist/ssr/calendar";
+import { UserGear as UserGearIcon } from "@phosphor-icons/react/dist/ssr/Usergear";
+import { Ruler as RulerIcon } from "@phosphor-icons/react/dist/ssr/ruler";
+import { MapPin as MapPinIcon } from "@phosphor-icons/react/dist/ssr/mappin";
+import { Network as NetworkIcon } from "@phosphor-icons/react/dist/ssr/network";
+import { TreeStructure as TreeStructureIcon } from "@phosphor-icons/react/dist/ssr/TreeStructure";
 import { WarningDiamond as WarningDiamondIcon } from "@phosphor-icons/react/dist/ssr/WarningDiamond";
+import { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
 
 export const icons = {
 	"address-book": AddressBookIcon,
@@ -63,4 +71,11 @@ export const icons = {
 	upload: UploadIcon,
 	users: UsersIcon,
 	typeperson: TypepersonIcon,
+	city: CityIcon,
+	calendar: CalendarIcon,
+	usergear: UserGearIcon,
+	ruler: RulerIcon,
+	mappin: MapPinIcon,
+	flow: TreeStructureIcon,
+	department: NetworkIcon,
 } as Record<string, Icon>;

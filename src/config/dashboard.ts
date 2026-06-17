@@ -32,16 +32,20 @@ export const dashboardConfig = {
 			key: "registers",
 			title: "Registers",
 			items: [
-				{
-					key: "typepersons",
-					title: "Type Persons",
-					icon: "typeperson",
-					items: [
-						{ key: "typepersons", title: "List type persons", href: paths.dashboard.typepersons.list },
-						{ key: "typepersons:create", title: "Create type person", href: paths.dashboard.typepersons.create },
-						{ key: "typepersons:details", title: "Type person details", href: paths.dashboard.typepersons.details("1") },
-					],
-				}
+				{ key: "citys", title: "Citys", href: paths.dashboard.typepersons.list, icon: "city" },
+				{ key: "departments", title: "Departaments", href: paths.dashboard.typepersons.list, icon: "department" },
+				{ key: "holidays", title: "Holidays", href: paths.dashboard.typepersons.list, icon: "calendar" },
+				{ key: "roles", title: "Roles", href: paths.dashboard.typepersons.list, icon: "usergear" },
+				{ key: "scales", title: "Scales", href: paths.dashboard.typepersons.list, icon: "ruler"},
+				{ key: "states", title: "States", href: paths.dashboard.typepersons.list, icon: "mappin" },
+				{ key: "typepersons", title: "Type Persons", href: paths.dashboard.typepersons.list, icon: "typeperson" },
+			],
+		},			
+		{
+			key: "configs",
+			title: "Configs",
+			items: [
+				{ key: "flows", title: "Flows", href: paths.dashboard.overview, icon: "flow" },
 			],
 		},		
 		{
