@@ -16,6 +16,7 @@ import { paths } from "@/paths";
 import { Option } from "@/components/core/option";
 
 import { useTypepersonsSelection } from "./typepersons-selection-context";
+import { deleteTypePerson } from "@/app/dashboard/typepersons/_actions/update-typeperson";
 
 // The tabs should be generated using API data.
 const tabs = [
@@ -41,6 +42,28 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 	const router = useRouter();
 
 	const selection = useTypepersonsSelection();
+
+	const handleDelete = React.useCallback(async () => {
+		const confirmed = window.confirm(
+			`Deseja excluir ${selection.selected.size} registro(s)?`
+		);
+
+		if (!confirmed) {
+			return;
+		}
+
+		try {
+			const ids = Array.from(selection.selected);
+
+			await Promise.all(
+				ids.map((id) => deleteTypePerson({ id }))
+			);
+
+			router.refresh();
+		} catch (error) {
+			console.error("Erro ao excluir registros:", error);
+		}
+	}, [selection.selected, router]);
 
 	const updateSearchParams = React.useCallback(
 		(newFilters: Filters, newSortDir: SortDir): void => {
@@ -86,7 +109,7 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 			<Tabs onChange={handleStatusChange} sx={{ px: 3 }} value={status ?? ""} variant="scrollable">
 				{tabs.map((tab) => (
 					<Tab
-						icon={<Chip label={tab.count} size="small" variant="soft" />}
+						//icon={<Chip label={tab.count} size="small" variant="soft" />}
 						iconPosition="end"
 						key={tab.value}
 						label={tab.label}
@@ -106,7 +129,9 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 						<Typography color="text.secondary" variant="body2">
 							{selection.selected.size} selected
 						</Typography>
-						<Button color="error" variant="contained">
+						<Button color="error" 
+								variant="contained" 
+								onClick={handleDelete}>
 							Delete
 						</Button>
 					</Stack>

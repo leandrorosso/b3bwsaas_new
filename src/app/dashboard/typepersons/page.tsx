@@ -61,7 +61,7 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 							<TypePersonsTable rows={filteredTypepersons} />
 						</Box>
 						<Divider />
-						<TypePersonsPagination count={filteredTypepersons.length + 100} page={0} />
+						<TypePersonsPagination count={filteredTypepersons.length} page={0} />
 					</Card>
 				</TypepersonsSelectionProvider>
 			</Stack>
