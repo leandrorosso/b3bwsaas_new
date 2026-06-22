@@ -2,16 +2,13 @@
 
 import * as React from "react";
 import RouterLink from "next/link";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
-import LinearProgress from "@mui/material/LinearProgress";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { CheckCircle as CheckCircleIcon } from "@phosphor-icons/react/dist/ssr/CheckCircle";
-import { Clock as ClockIcon } from "@phosphor-icons/react/dist/ssr/Clock";
 import { Minus as MinusIcon } from "@phosphor-icons/react/dist/ssr/Minus";
 import { PencilSimple as PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr/PencilSimple";
 
@@ -65,19 +62,6 @@ const columns = [
 		name: "Updated at",
 		width: "150px",
 	},	
-	/*{
-		formatter: (row): React.JSX.Element => {
-			const mapping = {
-				true: { label: "Active", icon: <CheckCircleIcon color="var(--mui-palette-success-main)" weight="fill" /> },
-				false: { label: "Inactive", icon: <MinusIcon color="var(--mui-palette-error-main)" /> },
-			} as const;
-			const { label, icon } = mapping[row.inactive] ?? { label: "Unknown", icon: null };
-
-			return <Chip icon={icon} label={label} size="small" variant="outlined" />;
-		},
-		name: "Status",
-		width: "100px",
-	},*/
 	{
 	formatter: (row): React.JSX.Element => {
 		const mapping = {

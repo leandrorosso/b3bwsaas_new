@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Select from "@mui/material/Select";
 import type { SelectChangeEvent } from "@mui/material/Select";
@@ -12,11 +11,20 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import { ArrowDown as ArrowDropDownIcon } from "@phosphor-icons/react/dist/ssr/ArrowDown"; 
+
 import { paths } from "@/paths";
 import { Option } from "@/components/core/option";
 
 import { useTypepersonsSelection } from "./typepersons-selection-context";
-import { deleteTypePerson } from "@/app/dashboard/typepersons/_actions/update-typeperson";
+import { deleteTypePerson, activeTypePerson } from "@/app/dashboard/typepersons/_actions/update-typeperson";
 
 // The tabs should be generated using API data.
 const tabs = [
@@ -37,6 +45,13 @@ export interface TypepersonsFiltersProps {
 }
 
 export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: TypepersonsFiltersProps): React.JSX.Element {
+	const options = ["Delete", "(In)Activate"];
+
+	const [open, setOpen] = React.useState(false);
+	const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+	const anchorRef = React.useRef<HTMLDivElement>(null);
+
 	const { status } = filters;
 
 	const router = useRouter();
@@ -65,6 +80,28 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 		}
 	}, [selection.selected, router]);
 
+
+	const handleActive = React.useCallback(
+	async (inactive: boolean) => {
+		try {
+			const ids = Array.from(selection.selected);
+
+			await Promise.all(
+				ids.map((id) =>
+					activeTypePerson({
+						id,
+					})
+				)
+			);
+
+			router.refresh();
+		} catch (error) {
+			console.error("Erro ao atualizar registros:", error);
+		}
+	},
+	[selection.selected, router]
+	);
+
 	const updateSearchParams = React.useCallback(
 		(newFilters: Filters, newSortDir: SortDir): void => {
 			const searchParams = new URLSearchParams();
@@ -81,6 +118,22 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 		},
 		[router]
 	);
+
+	const handleAction = React.useCallback(async () => {
+		switch (selectedIndex) {
+			case 0:
+				await handleDelete();
+				break;
+
+			case 1:
+				await handleActive(false); // Active
+				break;
+
+			case 2:
+				await handleActive(true); // Inactive
+				break;
+		}
+	}, [selectedIndex, handleDelete, handleActive]);
 
 	const handleClearFilters = React.useCallback(() => {
 		updateSearchParams({}, sortDir);
@@ -101,6 +154,33 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 		},
 		[updateSearchParams, filters]
 	);
+
+	const handleClick = () => {
+		handleAction();
+	};
+
+	const handleToggle = () => {
+		setOpen((prevOpen) => !prevOpen);
+	};
+
+	const handleMenuItemClick = (
+		event: React.MouseEvent<HTMLLIElement>,
+		index: number
+	) => {
+		setSelectedIndex(index);
+		setOpen(false);
+	};
+
+	const handleClose = (event: Event) => {
+		if (
+			anchorRef.current &&
+			anchorRef.current.contains(event.target as HTMLElement)
+		) {
+			return;
+		}
+
+		setOpen(false);
+};
 
 	const hasFilters = status ;
 
@@ -129,11 +209,59 @@ export function TypepersonsFilters({ filters = {}, sortDir = "desc" }: Typeperso
 						<Typography color="text.secondary" variant="body2">
 							{selection.selected.size} selected
 						</Typography>
-						<Button color="error" 
-								variant="contained" 
-								onClick={handleDelete}>
-							Delete
-						</Button>
+						<div ref={anchorRef}>
+							<ButtonGroup variant="contained">
+								<Button
+									color={
+										selectedIndex === 0
+											? "error"
+											: selectedIndex === 1
+											? "success"
+											: "warning"
+									}
+									onClick={handleClick}
+								>
+									{options[selectedIndex]}
+								</Button>
+
+								<Button
+									size="small"
+									onClick={handleToggle}
+									color="error"
+								>
+									<ArrowDropDownIcon />
+								</Button>
+							</ButtonGroup>
+
+							<Popper
+								open={open}
+								anchorEl={anchorRef.current}
+								transition
+								disablePortal
+							>
+								{({ TransitionProps }) => (
+									<Grow {...TransitionProps}>
+										<Paper>
+											<ClickAwayListener onClickAway={handleClose}>
+												<MenuList>
+													{options.map((option, index) => (
+														<MenuItem
+															key={option}
+															selected={index === selectedIndex}
+															onClick={(event) =>
+																handleMenuItemClick(event, index)
+															}
+														>
+															{option}
+														</MenuItem>
+													))}
+												</MenuList>
+											</ClickAwayListener>
+										</Paper>
+									</Grow>
+								)}
+							</Popper>
+						</div>
 					</Stack>
 				) : null}
 				<Select name="sort" onChange={handleSortChange} sx={{ maxWidth: "100%", width: "120px" }} value={sortDir}>

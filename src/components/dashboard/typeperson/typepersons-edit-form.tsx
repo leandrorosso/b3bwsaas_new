@@ -20,6 +20,9 @@ import Typography from "@mui/material/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { z as zod } from "zod";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import  Switch, { SwitchProps }  from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { styled } from '@mui/material/styles';
 
 import { paths } from "@/paths";
 import { logger } from "@/lib/default-logger";
@@ -48,12 +51,73 @@ export interface TypePersonEditFormProps {
 	typeperson: TypePerson;
 }
 
+const IOSSwitch = styled((props: SwitchProps) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  '& .MuiSwitch-switchBase': {
+    padding: 0,
+    margin: 2,
+    transitionDuration: '300ms',
+    '&.Mui-checked': {
+      transform: 'translateX(16px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: '#65C466',
+        opacity: 1,
+        border: 0,
+        ...theme.applyStyles('dark', {
+          backgroundColor: '#2ECA45',
+        }),
+      },
+      '&.Mui-disabled + .MuiSwitch-track': {
+        opacity: 0.5,
+      },
+    },
+    '&.Mui-focusVisible .MuiSwitch-thumb': {
+      color: '#33cf4d',
+      border: '6px solid #fff',
+    },
+    '&.Mui-disabled .MuiSwitch-thumb': {
+      color: theme.palette.grey[100],
+      ...theme.applyStyles('dark', {
+        color: theme.palette.grey[600],
+      }),
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: 0.7,
+      ...theme.applyStyles('dark', {
+        opacity: 0.3,
+      }),
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxSizing: 'border-box',
+    width: 22,
+    height: 22,
+  },
+  '& .MuiSwitch-track': {
+    borderRadius: 26 / 2,
+    backgroundColor: '#E9E9EA',
+    opacity: 1,
+    transition: theme.transitions.create(['background-color'], {
+      duration: 500,
+    }),
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#39393D',
+    }),
+  },
+}));
+
 export function TypePersonEditForm({ typeperson }: TypePersonEditFormProps): React.JSX.Element {
 	const router = useRouter();
   	const [isFirstLoading, setIsFirstLoading] = React.useState(false);
   	const [isSalvarLoading, setIsSalvarLoading] = React.useState(false);
   	const [isDeleteLoading, setIsDeleteLoading] = React.useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);	
+	const [isActive, setIsActive] = React.useState(!typeperson.inactive);	
 
 	const {
 		control,
@@ -88,7 +152,7 @@ export function TypePersonEditForm({ typeperson }: TypePersonEditFormProps): Rea
 	);
 
 	const handleActiveAction = React.useCallback(
-		async (): Promise<void> => {
+		async (checked: boolean): Promise<void> => {
     		setIsFirstLoading(true);
 
 			const response = await activeTypePerson({
@@ -145,7 +209,30 @@ export function TypePersonEditForm({ typeperson }: TypePersonEditFormProps): Rea
 						<CardContent>
 							<Stack divider={<Divider />} spacing={4}>
 								<Stack spacing={3}>
-									<Typography variant="h6">Basic information</Typography>
+									<Stack
+										direction="row"
+										justifyContent="space-between"
+										alignItems="center"
+									>
+										<Typography variant="h6">Basic information</Typography>
+										<FormControlLabel
+											control={
+												<IOSSwitch 
+													sx={{ m: 1 }}
+													checked={isActive}
+													onChange={(_, checked) => handleActiveAction(checked)}
+													disabled={isFirstLoading || isSalvarLoading || isDeleteLoading}
+												/>
+											}
+											label={
+												isFirstLoading ? (
+													<CircularProgress size={20} />
+												) : (
+													isActive ? "Active" : "Inactive"
+												)
+											}
+										/>	
+									</Stack>
 									<Grid container spacing={3}>
 										<Grid
 											size={{
@@ -198,18 +285,7 @@ export function TypePersonEditForm({ typeperson }: TypePersonEditFormProps): Rea
 							startIcon={isSalvarLoading ? <CircularProgress size={20} color="inherit" /> : null}
 							>               
 							Save changes
-							</Button>
-
-							<Button
-							//type="submit"
-							variant="contained"
-							color="warning"
-							onClick={handleActiveAction}
-							disabled={isFirstLoading || isSalvarLoading || isDeleteLoading}
-							startIcon={isFirstLoading ? <CircularProgress size={20} color="inherit" /> : null}
-							>
-							{typeperson.inactive === true ? 'Activate' : 'Deactivate'}
-							</Button>							
+							</Button>					
 						</CardActions>
 
 						{/* O Dialog fica melhor posicionado fora do CardActions para não quebrar o layout flex */}

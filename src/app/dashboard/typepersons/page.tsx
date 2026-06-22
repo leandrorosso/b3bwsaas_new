@@ -21,17 +21,34 @@ import { getAllTypePersons } from "./_data-access/get-all-typepersons";
 
 export const metadata = { title: `List | Type Persons | Dashboard | ${appConfig.name}` } satisfies Metadata;
 
-const { data: typepersons } = await getAllTypePersons();
-
 interface PageProps {
-	searchParams: Promise<{ sortDir?: "asc" | "desc"; status?: string }>;
+	searchParams: Promise<{
+		sortDir?: "asc" | "desc"; 
+		status?: string 
+		page?: string;
+		rowsPerPage?: string;
+	}>;
 }
 
 export default async function Page({ searchParams }: PageProps): Promise<React.JSX.Element> {
-	const { sortDir, status } = await searchParams;
+	const { sortDir, 
+			status, 
+			page: pageParam,
+			rowsPerPage: rowsPerPageParam, 
+		} = await searchParams;
+
+	const page = Number(pageParam ?? 0);
+	const rowsPerPage = Number(rowsPerPageParam ?? 5);
+
+	const { data: typepersons } = await getAllTypePersons();
 
 	const sortedTypepersons = applySort(typepersons, sortDir);
 	const filteredTypepersons = applyFilters(sortedTypepersons, { status });
+
+	const paginatedTypepersons = filteredTypepersons.slice(
+		page * rowsPerPage,
+		page * rowsPerPage + rowsPerPage
+	);
 
 	return (
 		<Box
@@ -53,15 +70,19 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 						</Button>
 					</Box>
 				</Stack>
-				<TypepersonsSelectionProvider typepersons={filteredTypepersons}>
+				<TypepersonsSelectionProvider typepersons={paginatedTypepersons}>
 					<Card>
 						<TypepersonsFilters filters={{ status }} sortDir={sortDir} />
 						<Divider />
 						<Box sx={{ overflowX: "auto" }}>
-							<TypePersonsTable rows={filteredTypepersons} />
+							<TypePersonsTable rows={paginatedTypepersons} />
 						</Box>
 						<Divider />
-						<TypePersonsPagination count={filteredTypepersons.length} page={0} />
+						<TypePersonsPagination 
+							count={filteredTypepersons.length} 
+							page={page}
+							rowsPerPage={rowsPerPage}
+					 	/>
 					</Card>
 				</TypepersonsSelectionProvider>
 			</Stack>

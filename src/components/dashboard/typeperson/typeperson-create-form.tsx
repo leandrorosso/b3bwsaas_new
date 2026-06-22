@@ -54,7 +54,7 @@ export function TypePersonCreateForm(): React.JSX.Element {
 
 			if (response.data && !Array.isArray(response.data)) {
 				toast.success("Type person created");
-				router.push(paths.dashboard.typepersons.details(response.data.id));
+				router.push(paths.dashboard.typepersons.list); //details(response.data.id));
 			} else {
 				logger.error(response.error);
 				toast.error("Something went wrong!");
