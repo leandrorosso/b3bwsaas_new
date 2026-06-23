@@ -12,6 +12,9 @@ import { Bell as BellIcon } from "@phosphor-icons/react/dist/ssr/Bell";
 import { CreditCard as CreditCardIcon } from "@phosphor-icons/react/dist/ssr/CreditCard";
 import { LockKey as LockKeyIcon } from "@phosphor-icons/react/dist/ssr/LockKey";
 import { PlugsConnected as PlugsConnectedIcon } from "@phosphor-icons/react/dist/ssr/PlugsConnected";
+import { Network as NetworkIcon } from "@phosphor-icons/react/dist/ssr/network";
+import { Ruler as RulerIcon } from "@phosphor-icons/react/dist/ssr/ruler";
+import { MapPin as MapPinIcon } from "@phosphor-icons/react/dist/ssr/mappin";
 import { UserCircle as UserCircleIcon } from "@phosphor-icons/react/dist/ssr/UserCircle";
 import { UsersThree as UsersThreeIcon } from "@phosphor-icons/react/dist/ssr/UsersThree";
 
@@ -35,14 +38,9 @@ const navItems = [
 		key: "organization",
 		title: "Organization",
 		items: [
-			{ key: "billing", title: "Billing & plans", href: paths.dashboard.settings.billing, icon: "credit-card" },
-			{ key: "team", title: "Team", href: paths.dashboard.settings.team, icon: "users-three" },
-			{
-				key: "integrations",
-				title: "Integrations",
-				href: paths.dashboard.settings.integrations,
-				icon: "plugs-connected",
-			},
+			{ key: "departments", title: "Departments", href: paths.dashboard.settings.billing, icon: "department" },
+			{ key: "roles", title: "Roles", href: paths.dashboard.settings.team, icon: "ruler" },
+			{key: "scales",	title: "Scales",href: paths.dashboard.settings.integrations, icon: "mappin"},
 		],
 	},
 ] satisfies NavItemConfig[];
@@ -54,6 +52,9 @@ const icons = {
 	"user-circle": UserCircleIcon,
 	"users-three": UsersThreeIcon,
 	bell: BellIcon,
+	ruler: RulerIcon,
+	mappin: MapPinIcon,
+	department: NetworkIcon,	
 } as Record<string, Icon>;
 
 export function SideNav(): React.JSX.Element {

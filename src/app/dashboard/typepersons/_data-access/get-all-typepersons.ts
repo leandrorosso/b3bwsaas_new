@@ -1,6 +1,6 @@
 "use server"
 
-import { Typeperson } from "@/components/dashboard/typeperson/typepersons-table";
+import { Typeperson } from "@/components/dashboard/typepersons/typepersons-table";
 import prisma from "@/lib/prisma";
 
 type GetAllTypePersonsResult = {

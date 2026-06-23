@@ -11,15 +11,15 @@ import { Plus as PlusIcon } from "@phosphor-icons/react/dist/ssr/Plus";
 import { paths } from "@/paths";
 
 import { appConfig } from "@/config/app";
-import { TypepersonsFilters } from "@/components/dashboard/typepersons/typepersons-filters";
-import type { Filters } from "@/components/dashboard/typepersons/typepersons-filters";
-import { TypePersonsPagination } from "@/components/dashboard/typepersons/typepersons-pagination";
-import { TypepersonsSelectionProvider } from "@/components/dashboard/typepersons/typepersons-selection-context";
-import { TypePersonsTable } from "@/components/dashboard/typepersons/typepersons-table";
-import type { Typeperson } from "@/components/dashboard/typepersons/typepersons-table";
-import { getAllTypePersons } from "./_data-access/get-all-typepersons";
+import { ScalesFilters } from "@/components/dashboard/scales/scales-filters";
+import type { Filters } from "@/components/dashboard/scales/scales-filters";
+import { ScalesPagination } from "@/components/dashboard/scales/scales-pagination";
+import { ScalesSelectionProvider } from "@/components/dashboard/scales/scales-selection-context";
+import { ScalesTable } from "@/components/dashboard/scales/scales-table";
+import type { Scale } from "@/components/dashboard/scales/scales-table";
+import { getAllScales } from "./_data-access/get-all-scales";
 
-export const metadata = { title: `List | Type Persons | Dashboard | ${appConfig.name}` } satisfies Metadata;
+export const metadata = { title: `List | Scales | Dashboard | ${appConfig.name}` } satisfies Metadata;
 
 interface PageProps {
 	searchParams: Promise<{
@@ -40,12 +40,12 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 	const page = Number(pageParam ?? 0);
 	const rowsPerPage = Number(rowsPerPageParam ?? 5);
 
-	const { data: typepersons } = await getAllTypePersons();
+	const { data: scales } = await getAllScales();
 
-	const sortedTypepersons = applySort(typepersons, sortDir);
-	const filteredTypepersons = applyFilters(sortedTypepersons, { status });
+	const sortedScales = applySort(scales, sortDir);
+	const filteredScales = applyFilters(sortedScales, { status });
 
-	const paginatedTypepersons = filteredTypepersons.slice(
+	const paginatedScales = filteredScales.slice(
 		page * rowsPerPage,
 		page * rowsPerPage + rowsPerPage
 	);
@@ -62,29 +62,29 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 			<Stack spacing={4}>
 				<Stack direction={{ xs: "column", sm: "row" }} spacing={3} sx={{ alignItems: "flex-start" }}>
 					<Box sx={{ flex: "1 1 auto" }}>
-						<Typography variant="h4">Type Persons</Typography>
+						<Typography variant="h4">Scales</Typography>
 					</Box>
 					<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-						<Button component={RouterLink} href={paths.dashboard.typepersons.create} startIcon={<PlusIcon />} variant="contained">
+						<Button component={RouterLink} href={paths.dashboard.scales.create} startIcon={<PlusIcon />} variant="contained">
 							Add
 						</Button>
 					</Box>
 				</Stack>
-				<TypepersonsSelectionProvider typepersons={paginatedTypepersons}>
+				<ScalesSelectionProvider scales={paginatedScales}>
 					<Card>
-						<TypepersonsFilters filters={{ status }} sortDir={sortDir} />
+						<ScalesFilters filters={{ status }} sortDir={sortDir} />
 						<Divider />
 						<Box sx={{ overflowX: "auto" }}>
-							<TypePersonsTable rows={paginatedTypepersons} />
+							<ScalesTable rows={paginatedScales} />
 						</Box>
 						<Divider />
-						<TypePersonsPagination 
-							count={filteredTypepersons.length} 
+						<ScalesPagination 
+							count={filteredScales.length} 
 							page={page}
 							rowsPerPage={rowsPerPage}
 					 	/>
 					</Card>
-				</TypepersonsSelectionProvider>
+				</ScalesSelectionProvider>
 			</Stack>
 		</Box>
 	);
@@ -92,7 +92,7 @@ export default async function Page({ searchParams }: PageProps): Promise<React.J
 
 // Sorting and filtering has to be done on the server.
 
-function applySort(row: Typeperson[], sortDir: "asc" | "desc" | undefined): Typeperson[] {
+function applySort(row: Scale[], sortDir: "asc" | "desc" | undefined): Scale[] {
 	return row.sort((a, b) => {
 		if (sortDir === "asc") {
 			return a.created_at!.getTime() - b.created_at!.getTime();
@@ -102,7 +102,7 @@ function applySort(row: Typeperson[], sortDir: "asc" | "desc" | undefined): Type
 	});
 }
 
-function applyFilters(row: Typeperson[], { status }: Filters): Typeperson[] {
+function applyFilters(row: Scale[], { status }: Filters): Scale[] {
 
 	return row.filter((item) => {
 		if (status !== undefined && item.inactive !== (status === "Inactive" ? true : false)) {

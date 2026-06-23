@@ -36,7 +36,7 @@ export const dashboardConfig = {
 				{ key: "departments", title: "Departaments", href: paths.dashboard.typepersons.list, icon: "department" },
 				{ key: "holidays", title: "Holidays", href: paths.dashboard.typepersons.list, icon: "calendar" },
 				{ key: "roles", title: "Roles", href: paths.dashboard.typepersons.list, icon: "usergear" },
-				{ key: "scales", title: "Scales", href: paths.dashboard.typepersons.list, icon: "ruler"},
+				{ key: "scales", title: "Scales", href: paths.dashboard.scales.list, icon: "ruler"},
 				{ key: "states", title: "States", href: paths.dashboard.typepersons.list, icon: "mappin" },
 				{ key: "typepersons", title: "Type Persons", href: paths.dashboard.typepersons.list, icon: "typeperson" },
 			],

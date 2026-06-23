@@ -113,6 +113,11 @@ export const paths = {
 			preview: (productId: string) => `/dashboard/products?previewId=${productId}`,
 			details: (productId: string) => `/dashboard/products/${productId}`,
 		},
+		scales: {
+			list: "/dashboard/scales",
+			create: "/dashboard/scales/create",
+			details: (scaleId: string) => `/dashboard/scales/${scaleId}`,
+		},		
 		social: {
 			profile: { timeline: "/dashboard/social/profile", connections: "/dashboard/social/profile/connections" },
 			feed: "/dashboard/social/feed",

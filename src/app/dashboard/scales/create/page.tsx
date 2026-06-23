@@ -9,9 +9,9 @@ import { ArrowLeft as ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr/Arrow
 
 import { appConfig } from "@/config/app";
 import { paths } from "@/paths";
-import { TypePersonCreateForm } from "@/components/dashboard/typepersons/typeperson-create-form";
+import { ScaleCreateForm } from "@/components/dashboard/scales/scale-create-form";
 
-export const metadata = { title: `Create | Type Persons | Dashboard | ${appConfig.name}` } satisfies Metadata;
+export const metadata = { title: `Create | Scales | Dashboard | ${appConfig.name}` } satisfies Metadata;
 
 export default function Page(): React.JSX.Element {
 	return (
@@ -29,19 +29,19 @@ export default function Page(): React.JSX.Element {
 						<Link
 							color="text.primary"
 							component={RouterLink}
-							href={paths.dashboard.typepersons.list}
+							href={paths.dashboard.scales.list}
 							sx={{ alignItems: "center", display: "inline-flex", gap: 1 }}
 							variant="subtitle2"
 						>
 							<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />
-							Type Persons
+							Scales
 						</Link>
 					</div>
 					<div>
-						<Typography variant="h4">Create type person</Typography>
+						<Typography variant="h4">Create scale</Typography>
 					</div>
 				</Stack>
-				<TypePersonCreateForm />
+				<ScaleCreateForm />
 			</Stack>
 		</Box>
 	);

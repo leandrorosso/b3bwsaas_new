@@ -9,28 +9,28 @@ import { appConfig } from "@/config/app";
 import { paths } from "@/paths";
 import Typography from "@mui/material/Typography";
 import prisma from "@/lib/prisma";
-import { TypePersonEditForm } from "@/components/dashboard/typepersons/typepersons-edit-form";
+import { ScaleEditForm } from "@/components/dashboard/scales/scales-edit-form";
 
-export const metadata = { title: `Details | Type Persons | Dashboard | ${appConfig.name}` } satisfies Metadata;
+export const metadata = { title: `Details | Scales | Dashboard | ${appConfig.name}` } satisfies Metadata;
 
 interface PageProps {
   params: {
-    typepersonId: string;
+    scaleId: string;
   };
 }
 
 export default async function Page({ params }: PageProps): Promise<React.JSX.Element>  {
 
-	const { typepersonId } = await params;
+	const { scaleId } = await params;
 
-	const response = await prisma.typeperson.findUnique({
+	const response = await prisma.scale.findUnique({
 		where: {
-			id: typepersonId,
+			id: scaleId,
 		},
 	});
 
 	if (!response) {
-		console.error(`Type person with id ${typepersonId} not found.`);
+		console.error(`Scale with id ${scaleId} not found.`);
 		return (
 			<Box
 				sx={{
@@ -40,7 +40,7 @@ export default async function Page({ params }: PageProps): Promise<React.JSX.Ele
 					width: "var(--Content-width)",
 				}}
 			>
-				<Typography variant="h4">Type person not found</Typography>
+				<Typography variant="h4">Scale not found</Typography>
 			</Box>
 		);
 	}
@@ -59,19 +59,19 @@ export default async function Page({ params }: PageProps): Promise<React.JSX.Ele
 					<Link
 						color="text.primary"
 						component={RouterLink}
-						href={paths.dashboard.typepersons.list}
+						href={paths.dashboard.scales.list}
 						sx={{ alignItems: "center", display: "inline-flex", gap: 1 }}
 						variant="subtitle2"
 					>
 						<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />
-						Typepersons
+						Scales
 					</Link>
 				</div>
 				<div>
-					<Typography variant="h4">Edit typeperson</Typography>
+					<Typography variant="h4">Edit scale</Typography>
 				</div>
-				<TypePersonEditForm
-					typeperson={{
+				<ScaleEditForm
+					scale={{
 						id: response.id,
 						name: response.name,
 						inactive: response.inactive,
