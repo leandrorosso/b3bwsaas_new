@@ -56,6 +56,7 @@ export const paths = {
 			notifications: "/dashboard/settings/notifications",
 			security: "/dashboard/settings/security",
 			team: "/dashboard/settings/team",
+			scale: "/dashboard/settings/scale",			
 		},
 		academy: { browse: "/dashboard/academy", details: (courseId: string) => `/dashboard/academy/courses/${courseId}` },
 		analytics: "/dashboard/analytics",

@@ -21,6 +21,7 @@ import { UsersThree as UsersThreeIcon } from "@phosphor-icons/react/dist/ssr/Use
 import type { NavItemConfig } from "@/types/nav";
 import { paths } from "@/paths";
 import { isNavItemActive } from "@/lib/is-nav-item-active";
+import { getUser } from "@/lib/custom-auth/browser";
 
 // NOTE: First level elements are groups.
 
@@ -40,7 +41,7 @@ const navItems = [
 		items: [
 			{ key: "departments", title: "Departments", href: paths.dashboard.settings.billing, icon: "department" },
 			{ key: "roles", title: "Roles", href: paths.dashboard.settings.team, icon: "ruler" },
-			{key: "scales",	title: "Scales",href: paths.dashboard.settings.integrations, icon: "mappin"},
+			{ key: "scales",	title: "Scales",href: paths.dashboard.settings.scale, icon: "mappin"},
 		],
 	},
 ] satisfies NavItemConfig[];
@@ -56,6 +57,9 @@ const icons = {
 	mappin: MapPinIcon,
 	department: NetworkIcon,	
 } as Record<string, Icon>;
+
+
+const  {data}  = await getUser();
 
 export function SideNav(): React.JSX.Element {
 	const pathname = usePathname();
@@ -93,9 +97,9 @@ export function SideNav(): React.JSX.Element {
 				<Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
 					<Avatar src="/assets/avatar.png">AV</Avatar>
 					<div>
-						<Typography variant="subtitle1">Sofia Rivers</Typography>
+						<Typography variant="subtitle1">{data?.user?.name ?? ""}</Typography>
 						<Typography color="text.secondary" variant="caption">
-							sofia@devias.io
+							{data?.user?.email ?? ""}
 						</Typography>
 					</div>
 				</Stack>

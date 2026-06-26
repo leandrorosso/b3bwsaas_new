@@ -19,17 +19,19 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { Camera as CameraIcon } from "@phosphor-icons/react/dist/ssr/Camera";
 import { User as UserIcon } from "@phosphor-icons/react/dist/ssr/User";
-
 import { Option } from "@/components/core/option";
-import type { User } from "@/lib/custom-auth/types";
+import { getUser } from "@/lib/custom-auth/browser";
+import { redirect } from "next/navigation";
+import { paths } from "@/paths";
+import { logger } from "@/lib/default-logger";
 
-interface AccountDetailsProps {
-	user: User | null | undefined;
-}
+const  {data: res}  = await getUser();
 
-export function AccountDetails({ user }: AccountDetailsProps): React.JSX.Element {
-	if (!user) {
-    	return <div>Usuário não encontrado</div>;
+export function AccountDetails(): React.JSX.Element {
+
+	if (!res?.user) {
+		logger.debug("[Sign in] User is authenticated, redirecting to dashboard");
+		redirect(paths.auth.custom.signIn);
 	}
 
 	return (
@@ -90,11 +92,11 @@ export function AccountDetails({ user }: AccountDetailsProps): React.JSX.Element
 					<Stack spacing={2}>
 						<FormControl>
 							<InputLabel>Full name</InputLabel>
-							<OutlinedInput defaultValue={user.name ?? ""} name="fullName" />
+							<OutlinedInput defaultValue={res?.user?.name ?? ""} name="fullName" />
 						</FormControl>
 						<FormControl disabled>
 							<InputLabel>Email address</InputLabel>
-							<OutlinedInput name="email" type="email" value={user.email ?? ""} />
+							<OutlinedInput name="email" type="email" value={res?.user?.email ?? ""} />
 							<FormHelperText>
 								Please <Link variant="inherit">contact us</Link> to change your email
 							</FormHelperText>

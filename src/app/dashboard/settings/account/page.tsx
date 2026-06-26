@@ -27,7 +27,7 @@ export default async function Page(): Promise<React.JSX.Element> {
 				<Typography variant="h4">Account</Typography>
 			</div>
 			<Stack spacing={4}>
-				<AccountDetails user={data?.user} />
+				<AccountDetails />
 				<ThemeSwitch />
 				<Privacy />
 				<DeleteAccount />
