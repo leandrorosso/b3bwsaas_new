@@ -128,6 +128,11 @@ export const paths = {
 			create: "/dashboard/typepersons/create",
 			details: (typePersonId: string) => `/dashboard/typepersons/${typePersonId}`,
 		},
+		users: {
+			list: "/dashboard/users",
+			create: "/dashboard/users/create",
+			details: (userId: string) => `/dashboard/users/${userId}`,
+		},
 		tasks: "/dashboard/tasks",
 	},
 	pdf: { invoice: (invoiceId: string) => `/pdf/invoices/${invoiceId}` },

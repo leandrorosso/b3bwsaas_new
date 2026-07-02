@@ -4,13 +4,15 @@ import * as React from "react";
 import RouterLink from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
+import Grid from "@mui/material/Grid2";
 import InputLabel from "@mui/material/InputLabel";
-import Link from "@mui/material/Link";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -18,21 +20,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z as zod } from "zod";
 
 import { paths } from "@/paths";
-import { signInWithOAuth, signUp } from "@/lib/custom-auth/actions";
-import { useAuth } from "@/components/auth/custom/auth-context";
-import { DynamicLogo } from "@/components/core/logo";
+import { logger } from "@/lib/default-logger";
 import { toast } from "@/components/core/toaster";
-
-interface OAuthProvider {
-	id: "google" | "discord";
-	name: string;
-	logo: string;
-}
-
-const oAuthProviders = [
-	{ id: "google", name: "Google", logo: "/assets/logo-google.svg" },
-	{ id: "discord", name: "Discord", logo: "/assets/logo-discord.svg" },
-] satisfies OAuthProvider[];
+import { createdUsers } from "@/app/dashboard/users/_actions/create-user";
 
 const schema = zod.object({
 	firstName: zod.string().min(1, { message: "First name is required" }),
@@ -55,95 +45,46 @@ const defaultValues = {
 	phone: "", 
 	password: "" } satisfies Values;
 
-export function SignUpForm(): React.JSX.Element {
-	const auth = useAuth();
+export function UserCreateForm(): React.JSX.Element {
 	const router = useRouter();
-	const [isPending, setIsPending] = React.useState<boolean>(false);
 
 	const {
 		control,
 		handleSubmit,
-		setError,
 		formState: { errors },
+		setValue,
+		watch,
 	} = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
-
-	const onAuth = React.useCallback(async (providerId: OAuthProvider["id"]): Promise<void> => {
-		setIsPending(true);
-
-		const { error } = await signInWithOAuth({ provider: providerId });
-
-		if (error) {
-			setIsPending(false);
-			toast.error(error);
-			return;
-		}
-
-		setIsPending(false);
-
-		// Redirect to OAuth provider
-	}, []);
 
 	const onSubmit = React.useCallback(
 		async (values: Values): Promise<void> => {
-			setIsPending(true);
+			const response = await createdUsers(values);
 
-			const { data, error } = await signUp(values);
-
-			if (error) {
-				setError("root", { type: "server", message: error });
-				setIsPending(false);
-				return;
+			if (response.data && !Array.isArray(response.data)) {
+				toast.success("User created");
+				router.push(paths.dashboard.users.list);
+			} else {
+				logger.error(response.error);
+				toast.error("Something went wrong!");
 			}
-
-			// Update the user in the auth context so client components that depend on it can re-render.
-			auth.setUser(data!.user);
-
-			// On router refresh the sign-up page component will automatically redirect to the dashboard.
-			router.refresh();
 		},
-		[auth, router, setError]
+		[router]
 	);
 
 	return (
-		<Stack spacing={4}>
-			<div>
-				<Box component={RouterLink} href={paths.home} sx={{ display: "inline-block", fontSize: 0 }}>
-					<DynamicLogo colorDark="light" colorLight="dark" height={32} width={122} />
-				</Box>
-			</div>
-			<Stack spacing={1}>
-				<Typography variant="h5">Sign up</Typography>
-				<Typography color="text.secondary" variant="body2">
-					Already have an account?{" "}
-					<Link component={RouterLink} href={paths.auth.custom.signIn} variant="subtitle2">
-						Sign in
-					</Link>
-				</Typography>
-			</Stack>
-			<Stack spacing={3}>
-				{/*<Stack spacing={2}>
-					{oAuthProviders.map(
-						(provider): React.JSX.Element => (
-							<Button
-								color="secondary"
-								disabled={isPending}
-								endIcon={<Box alt="" component="img" height={24} src={provider.logo} width={24} />}
-								key={provider.id}
-								onClick={(): void => {
-									onAuth(provider.id).catch(() => {
-										// noop
-									});
-								}}
-								variant="outlined"
-							>
-								Continue with {provider.name}
-							</Button>
-						)
-					)}
-				</Stack>
-				<Divider>or</Divider>*/}
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<Stack spacing={2}>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<Card>
+				<CardContent>
+					<Stack divider={<Divider />} spacing={4}>
+						<Stack spacing={3}>
+							<Typography variant="h6">User information</Typography>
+							<Grid container spacing={3}>
+								<Grid
+									size={{
+										md: 6,
+										xs: 12,
+									}}
+								>
 						<Controller
 							control={control}
 							name="firstName"
@@ -221,15 +162,20 @@ export function SignUpForm(): React.JSX.Element {
 								</FormControl>
 							)}
 						/>
-
-						{errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-						<Button disabled={isPending} type="submit" variant="contained">
-							Create account
-						</Button>
+								</Grid>
+							</Grid>
+						</Stack>
 					</Stack>
-				</form>
-			</Stack>
-			{/*<Alert color="warning">Created users are not persisted</Alert>*/}
-		</Stack>
+				</CardContent>
+				<CardActions sx={{ justifyContent: "flex-end" }}>
+					<Button color="secondary" component={RouterLink} href={paths.dashboard.users.list}>
+						Cancel
+					</Button>
+					<Button type="submit" variant="contained">
+						Create user
+					</Button>
+				</CardActions>
+			</Card>
+		</form>
 	);
 }

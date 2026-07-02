@@ -29,6 +29,13 @@ export const dashboardConfig = {
 			],
 		},
 		{
+			key: "admins",
+			title: "Admins",
+			items: [
+				{ key: "users", title: "Users", href: paths.dashboard.users.list, icon: "flow" },
+			],
+		},			
+		{
 			key: "registers",
 			title: "Registers",
 			items: [
@@ -47,7 +54,7 @@ export const dashboardConfig = {
 			items: [
 				{ key: "flows", title: "Flows", href: paths.dashboard.overview, icon: "flow" },
 			],
-		},		
+		},				
 		{
 			key: "general",
 			title: "General",

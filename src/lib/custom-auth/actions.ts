@@ -2,10 +2,8 @@
 
 import { cookies } from "next/headers";
 import { hash, compare } from "bcryptjs";
-//import { user } from "./data";
 import type { User } from "./types";
 import prisma from "../prisma";
-import { Prisma } from "../../generated/prisma/client";
 
 function generateToken(): string {
 	const arr = new Uint8Array(12);
