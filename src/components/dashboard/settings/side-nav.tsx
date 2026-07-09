@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import * as React from "react";
 import RouterLink from "next/link";
 import { usePathname } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
@@ -21,7 +21,7 @@ import { UsersThree as UsersThreeIcon } from "@phosphor-icons/react/dist/ssr/Use
 import type { NavItemConfig } from "@/types/nav";
 import { paths } from "@/paths";
 import { isNavItemActive } from "@/lib/is-nav-item-active";
-import { getUser } from "@/lib/custom-auth/browser";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 // NOTE: First level elements are groups.
 
@@ -41,7 +41,7 @@ const navItems = [
 		items: [
 			{ key: "departments", title: "Departments", href: paths.dashboard.settings.billing, icon: "department" },
 			{ key: "roles", title: "Roles", href: paths.dashboard.settings.team, icon: "ruler" },
-			{ key: "scales",	title: "Scales",href: paths.dashboard.settings.scale, icon: "mappin"},
+			{ key: "scales", title: "Scales", href: paths.dashboard.settings.scale, icon: "mappin" },
 		],
 	},
 ] satisfies NavItemConfig[];
@@ -55,14 +55,16 @@ const icons = {
 	bell: BellIcon,
 	ruler: RulerIcon,
 	mappin: MapPinIcon,
-	department: NetworkIcon,	
+	department: NetworkIcon,
 } as Record<string, Icon>;
-
-
-const  {data}  = await getUser();
 
 export function SideNav(): React.JSX.Element {
 	const pathname = usePathname();
+	const { user, isLoading } = useCurrentUser();
+
+	if (isLoading) {
+		return <></>; // ou um skeleton, se preferir
+	}
 
 	return (
 		<div>
@@ -97,9 +99,9 @@ export function SideNav(): React.JSX.Element {
 				<Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
 					<Avatar src="/assets/avatar.png">AV</Avatar>
 					<div>
-						<Typography variant="subtitle1">{data?.user?.name ?? ""}</Typography>
+						<Typography variant="subtitle1">{user?.name ?? ""}</Typography>
 						<Typography color="text.secondary" variant="caption">
-							{data?.user?.email ?? ""}
+							{user?.email ?? ""}
 						</Typography>
 					</div>
 				</Stack>

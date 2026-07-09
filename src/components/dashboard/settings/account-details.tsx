@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -20,18 +20,13 @@ import Typography from "@mui/material/Typography";
 import { Camera as CameraIcon } from "@phosphor-icons/react/dist/ssr/Camera";
 import { User as UserIcon } from "@phosphor-icons/react/dist/ssr/User";
 import { Option } from "@/components/core/option";
-import { getUser } from "@/lib/custom-auth/browser";
-import { redirect } from "next/navigation";
-import { paths } from "@/paths";
-import { logger } from "@/lib/default-logger";
-
-const  {data: res}  = await getUser();
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 export function AccountDetails(): React.JSX.Element {
+	const { user, isLoading } = useCurrentUser();
 
-	if (!res?.user) {
-		logger.debug("[Sign in] User is authenticated, redirecting to dashboard");
-		redirect(paths.auth.custom.signIn);
+	if (isLoading) {
+		return <></>; // ou um skeleton/spinner, se preferir
 	}
 
 	return (
@@ -92,11 +87,11 @@ export function AccountDetails(): React.JSX.Element {
 					<Stack spacing={2}>
 						<FormControl>
 							<InputLabel>Full name</InputLabel>
-							<OutlinedInput defaultValue={res?.user?.name ?? ""} name="fullName" />
+							<OutlinedInput defaultValue={user?.name ?? ""} name="fullName" />
 						</FormControl>
 						<FormControl disabled>
 							<InputLabel>Email address</InputLabel>
-							<OutlinedInput name="email" type="email" value={res?.user?.email ?? ""} />
+							<OutlinedInput name="email" type="email" value={user?.email ?? ""} />
 							<FormHelperText>
 								Please <Link variant="inherit">contact us</Link> to change your email
 							</FormHelperText>
