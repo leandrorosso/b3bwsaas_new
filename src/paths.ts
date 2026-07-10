@@ -131,7 +131,12 @@ export const paths = {
 		users: {
 			list: "/dashboard/users",
 			create: "/dashboard/users/create",
-			details: (userId: string) => `/dashboard/users/${userId}`,
+			details: (userId: string) => `/dashboard/users/${userId}/account`,
+			department: (userId: string) => `/dashboard/users/${userId}/departments`,
+			notifications: (userId: string) => `/dashboard/users/${userId}/notifications`,
+			security: (userId: string) => `/dashboard/users/${userId}/security`,
+			team: (userId: string) => `/dashboard/users/${userId}/team`,
+			scale: (userId: string) => `/dashboard/users/${userId}/scale`,
 		},
 		tasks: "/dashboard/tasks",
 	},

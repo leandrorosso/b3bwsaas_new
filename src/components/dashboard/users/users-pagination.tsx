@@ -46,6 +46,7 @@ export function UsersPagination({ count, page, rowsPerPage }: UsersPaginationPro
 
 	return (
 		<TablePagination
+			component="div"
 			count={count}
 			page={page}
 			rowsPerPage={rowsPerPage}
